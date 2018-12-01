@@ -138,7 +138,6 @@
             0,
             0,
             0});
-            this.WidthNUD.ValueChanged += new System.EventHandler(this.WidthNUD_ValueChanged);
             // 
             // label2
             // 
@@ -170,7 +169,6 @@
             0,
             0,
             0});
-            this.HeightNUD.ValueChanged += new System.EventHandler(this.HeightNUD_ValueChanged);
             // 
             // label3
             // 
@@ -184,6 +182,8 @@
             // SlowlyCB
             // 
             this.SlowlyCB.AutoSize = true;
+            this.SlowlyCB.Checked = true;
+            this.SlowlyCB.CheckState = System.Windows.Forms.CheckState.Checked;
             this.SlowlyCB.Location = new System.Drawing.Point(12, 10);
             this.SlowlyCB.Name = "SlowlyCB";
             this.SlowlyCB.Size = new System.Drawing.Size(56, 17);

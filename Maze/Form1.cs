@@ -33,14 +33,8 @@ namespace Maze
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (MazeBox.Height >= HeightNUD.Value && MazeBox.Width >= WidthNUD.Value)
-            {
-                maze = new Maze((int)HeightNUD.Value, (int)WidthNUD.Value, 1, MazeBox.CreateGraphics());
-            }
-            else
-            {
-                maze = new Maze((int)HeightNUD.Value, (int)WidthNUD.Value, 1);
-            }
+            int width = Math.Min((Width - 145) / (int)WidthNUD.Value, (Height - 40) / (int)HeightNUD.Value);
+            maze = new Maze((int)HeightNUD.Value* width, (int)WidthNUD.Value* width, width, MazeBox.CreateGraphics());
             if (SlowlyCB.Checked)
                 FrameTimer.Enabled = true;
             else
@@ -55,26 +49,22 @@ namespace Maze
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
             MazeBox.Width = Width - 145;
+            MazeBox.Height = Height - 40;
+            HeightNUD.Maximum = MazeBox.Height;
+            WidthNUD.Maximum = MazeBox.Width;
+            HeightNUD.Value = MazeBox.Height;
+            WidthNUD.Value = MazeBox.Width;
         }
 
         private void SlowlyCB_CheckedChanged(object sender, EventArgs e)
         {
+            FPS_NUD.Enabled = SlowlyCB.Checked;
             if (FrameTimer.Enabled)
                 if (!maze.IsDone)
                 {
                     FrameTimer.Enabled = false;
                     maze.DrawAll();
                 }
-        }
-
-        private void WidthNUD_ValueChanged(object sender, EventArgs e)
-        {
-            MazeBox.Width = (int)WidthNUD.Value;
-        }
-
-        private void HeightNUD_ValueChanged(object sender, EventArgs e)
-        {
-            MazeBox.Height = (int)HeightNUD.Value;
         }
     }
 
@@ -92,7 +82,7 @@ namespace Maze
             PixelWidth = pixelWidth;
             IsDone = false;
             Rows = hieght / pixelWidth;
-            Columns = width / pixelWidth; ;
+            Columns = width / pixelWidth;
             if (Columns % 2 == 0)
                 Columns--;
             if (Rows % 2 == 0)
@@ -107,6 +97,8 @@ namespace Maze
                     if (y == 0 || y == Rows - 1 || x == 0 || x == Columns - 1 || x % 2 == 0 || y % 2 == 0)
                         Cells[Index(x, y)].IsWall = true;
                 }
+            Cells[Index(1, 0)].IsWall = false; //Start cell
+            Cells[Index(Columns - 2, Rows - 1)].IsWall = false; //End cell
         }
 
         private int Index(int x, int y)
@@ -118,6 +110,7 @@ namespace Maze
 
         public void Draw()
         {
+            Graphics.Clear(Color.White);
             for (int y = 0; y < Rows; y++)
                 for (int x = 0; x < Columns; x++)
                     Graphics.FillRectangle(new SolidBrush(Cells[Index(x, y)].IsWall ? Color.Black : Color.White), x * PixelWidth, y * PixelWidth, PixelWidth, PixelWidth);
@@ -125,6 +118,7 @@ namespace Maze
 
         public void DrawAll()
         {
+            Graphics.Clear(Color.White);
             while (!IsDone) //Step 2
                 Step();
         }
@@ -138,6 +132,8 @@ namespace Maze
             if (stepsCount == 0)
             {
                 Graphics.FillRectangle(new SolidBrush(Color.Black), 0, 0, Columns * PixelWidth, Rows * PixelWidth);
+                Cells[Index(1, 0)].Draw(Color.White, PixelWidth, Graphics);
+                Cells[Index(Columns - 2, Rows - 1)].Draw(Color.White, PixelWidth, Graphics);
                 currentCell = Cells[Index(1, 1)]; //Step 1
             }
             currentCell.IsVisited = true; //Step 2.1.4
@@ -155,11 +151,6 @@ namespace Maze
             else
                 IsDone = true;
             stepsCount++;
-            if (IsDone)
-            {
-                Cells[Index(1, 0)].IsWall = false; //Start cell
-                Cells[Index(Columns - 2, Rows - 1)].IsWall = false; //End cell
-            }
         }
 
         private void RemoveWall(Cell currentCell, Cell chosenCell)
@@ -175,7 +166,6 @@ namespace Maze
                 index = Index(currentCell.X, currentCell.Y - 1);
             Cells[index].IsWall = false;
             Cells[index].Draw(Color.White, PixelWidth, Graphics);
-            //Graphics.FillRectangle(new SolidBrush(Color.White), Cells[index].X * PixelWidth, Cells[index].Y * PixelWidth, PixelWidth, PixelWidth);
         }
 
         private List<Cell> GetUnvisitedNeighboringCells(Cell currentCell)
@@ -206,31 +196,30 @@ namespace Maze
             Bitmap.Save(fileName);
             MessageBox.Show("Saved to " + Application.ExecutablePath);
         }
-    }
-
-    class Cell
-    {
-        public int X;
-        public int Y;
-        public bool IsVisited;
-        public bool IsWall;
-
-        public Cell(int x, int y)
+        class Cell
         {
-            X = x;
-            Y = y;
-            IsVisited = false;
-            IsWall = false;
-        }
+            public int X;
+            public int Y;
+            public bool IsVisited;
+            public bool IsWall;
 
-        public void Draw(Color color, int width, Graphics graphics)
-        {
-            graphics.FillRectangle(new SolidBrush(Color.White), X * width, Y * width, width, width);
-        }
+            public Cell(int x, int y)
+            {
+                X = x;
+                Y = y;
+                IsVisited = false;
+                IsWall = false;
+            }
 
-        public override string ToString()
-        {
-            return $"({X}, {Y}), {(IsVisited ? "" : "Not ")}Visited, {(IsWall ? "" : "Not ")}Wall";
+            public void Draw(Color color, int width, Graphics graphics)
+            {
+                graphics.FillRectangle(new SolidBrush(Color.White), X * width, Y * width, width, width);
+            }
+
+            public override string ToString()
+            {
+                return $"({X}, {Y}), {(IsVisited ? "" : "Not ")}Visited, {(IsWall ? "" : "Not ")}Wall";
+            }
         }
     }
 }
