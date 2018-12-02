@@ -10,25 +10,28 @@ namespace Maze
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void GenerateBTN_Click(object sender, EventArgs e)
         {
+            MakerGB.Enabled = false;
+            SolverGB.Enabled = false;
             Maze.Maker maze;
             maze = new Maze.Maker((int)ColumnsNUD.Value, (int)RowsNUD.Value);
             maze.Make();
             maze.SaveAsImage(SavePathTB.Text);
+            MakerGB.Enabled = true;
+            SolverGB.Enabled = true;
         }
 
         private void SolveBTN_Click(object sender, EventArgs e)
         {
+            MakerGB.Enabled = false;
+            SolverGB.Enabled = false;
             Maze.Solver maze;
             maze = new Maze.Solver(SolveInputPathTB.Text);
             maze.Solve();
             maze.SaveSolutionAsImage(SolveOutputPathTB.Text);
+            MakerGB.Enabled = true;
+            SolverGB.Enabled = true;
         }
     }
 }

@@ -37,9 +37,15 @@ namespace Maze
             SetCellWall(Columns - 2, Rows - 1, false); //End cell
         }
 
+        /// <summary>
+        /// Creates a maze from an image file.
+        /// </summary>
+        /// <param name="path"></param>
         private Maze(string path)
         {
-            Bitmap = new Bitmap(path);
+            Bitmap image = new Bitmap(path);
+            Bitmap = new Bitmap(image);
+            image.Dispose();
             Rows = Bitmap.Height;
             Columns = Bitmap.Width;
             Cells = new Cell[Rows * Columns];
@@ -49,7 +55,7 @@ namespace Maze
                     Cells[CellCoordinate(x, y)] = new Cell(x, y);
                     Cells[CellCoordinate(x, y)].IsWall = Bitmap.GetPixel(x, y) == Color.FromArgb(255, 0, 0, 0);
                 }
-            Bitmap = Bitmap.Clone(new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), PixelFormat.Format32bppArgb);
+            Bitmap = Bitmap.Clone(new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), PixelFormat.Format24bppRgb);
         }
 
         private void SetCellWall(int x, int y, bool isWall)
@@ -191,9 +197,10 @@ namespace Maze
                 StepsCount = 0;
                 CurrentCell = Cells[CellCoordinate(1, 1)];
                 Cells[CellCoordinate(1, 0)].IsVisited=true;
-                Cells[CellCoordinate(1, 0)].IsVisited = true;
-                SetCellSolution(1, 0, true); //Start cell
-                SetCellSolution(Columns - 2, Rows - 1, true); //End cell
+                Cells[CellCoordinate(1, 0)].IsSolution = true;
+                Cells[CellCoordinate(Columns - 2, Rows - 1)].IsSolution = true;
+                Bitmap.SetPixel(1, 0, Color.Red);
+                Bitmap.SetPixel(Columns - 2, Rows - 1, Color.Red);
             }
 
             public void Solve()
@@ -206,7 +213,6 @@ namespace Maze
             {
                 CurrentCell.IsVisited = true; //Step 2.1.4
                 CurrentCell.IsSolution = true;
-                SetCellSolution(CurrentCell.X, CurrentCell.Y, true);
                 List<Cell> neighboringCells = GetUnvisitedNeighboringCellsList(CurrentCell, 1);
                 if (neighboringCells.Count > 0) //Step 2.1
                 {
@@ -216,23 +222,53 @@ namespace Maze
                 }
                 else if (cellsStack.Count > 0) //Step 2.2
                 {
-                    SetCellSolution(CurrentCell.X, CurrentCell.Y, false);
+                    Cells[CellCoordinate(CurrentCell.X, CurrentCell.Y)].IsSolution = false;
                     CurrentCell = cellsStack.Pop(); //Step 2.2.1 and 2.2.2
                 }
-                if (Cells[CellCoordinate(Rows - 2, Columns - 2)].IsSolution)
+                else if (cellsStack.Count == 0)
+                    throw new Exception("No solution.");
+                if (Cells[CellCoordinate(Columns - 2, Rows - 2)].IsSolution)
+                {
+                    double value = 0;
+                    System.Diagnostics.Debug.WriteLine(cellsStack.Count);
+                    foreach (Cell cell in cellsStack)
+                    {
+                        Bitmap.SetPixel(cell.X, cell.Y, ColorFromHSV(value, 1, 1));
+                        value += 360f / cellsStack.Count;
+                    }
                     IsDone = true;
+                }
                 StepsCount++;
             }
 
-            private void SetCellSolution(int x, int y, bool isSolution)
+            private Color ColorFromHSV(double hue, double saturation, double value)
             {
-                Cells[CellCoordinate(x, y)].IsSolution = isSolution;
-                Bitmap.SetPixel(x, y, isSolution ? Color.Gray : Color.White);
+                int hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
+                double f = hue / 60 - Math.Floor(hue / 60);
+
+                value = value * 255;
+                int v = Convert.ToInt32(value);
+                int p = Convert.ToInt32(value * (1 - saturation));
+                int q = Convert.ToInt32(value * (1 - f * saturation));
+                int t = Convert.ToInt32(value * (1 - (1 - f) * saturation));
+
+                if (hi == 0)
+                    return Color.FromArgb(255, v, t, p);
+                else if (hi == 1)
+                    return Color.FromArgb(255, q, v, p);
+                else if (hi == 2)
+                    return Color.FromArgb(255, p, v, t);
+                else if (hi == 3)
+                    return Color.FromArgb(255, p, q, v);
+                else if (hi == 4)
+                    return Color.FromArgb(255, t, p, v);
+                else
+                    return Color.FromArgb(255, v, p, q);
             }
 
             public void SaveSolutionAsImage(string fileName)
             {
-                Bitmap.Clone(new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), PixelFormat.Format8bppIndexed).Save(fileName);
+                Bitmap.Clone(new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), PixelFormat.Format24bppRgb).Save(fileName);
                 System.Diagnostics.Process.Start(fileName);
             }
         }
