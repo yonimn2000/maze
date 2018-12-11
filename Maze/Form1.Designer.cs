@@ -44,6 +44,7 @@
             this.MakeMazeCB = new System.Windows.Forms.CheckBox();
             this.SolveMazeCB = new System.Windows.Forms.CheckBox();
             this.StartBTN = new System.Windows.Forms.Button();
+            this.BG_Worker = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.ColumnsNUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RowsNUD)).BeginInit();
             this.MakerGB.SuspendLayout();
@@ -116,7 +117,7 @@
             // 
             this.MakeOutputPathTB.Location = new System.Drawing.Point(120, 33);
             this.MakeOutputPathTB.Name = "MakeOutputPathTB";
-            this.MakeOutputPathTB.Size = new System.Drawing.Size(62, 20);
+            this.MakeOutputPathTB.Size = new System.Drawing.Size(66, 20);
             this.MakeOutputPathTB.TabIndex = 5;
             this.MakeOutputPathTB.Text = "maze.bmp";
             // 
@@ -137,9 +138,9 @@
             this.MakerGB.Controls.Add(this.MakeOutputPathTB);
             this.MakerGB.Controls.Add(this.RowsNUD);
             this.MakerGB.Controls.Add(this.label3);
-            this.MakerGB.Location = new System.Drawing.Point(12, 12);
+            this.MakerGB.Location = new System.Drawing.Point(7, 2);
             this.MakerGB.Name = "MakerGB";
-            this.MakerGB.Size = new System.Drawing.Size(188, 59);
+            this.MakerGB.Size = new System.Drawing.Size(193, 59);
             this.MakerGB.TabIndex = 7;
             this.MakerGB.TabStop = false;
             this.MakerGB.Text = "Maker";
@@ -150,9 +151,9 @@
             this.SolverGB.Controls.Add(this.SolveInputPathTB);
             this.SolverGB.Controls.Add(this.label5);
             this.SolverGB.Controls.Add(this.SolverInputPathLBL);
-            this.SolverGB.Location = new System.Drawing.Point(12, 77);
+            this.SolverGB.Location = new System.Drawing.Point(7, 61);
             this.SolverGB.Name = "SolverGB";
-            this.SolverGB.Size = new System.Drawing.Size(188, 59);
+            this.SolverGB.Size = new System.Drawing.Size(193, 59);
             this.SolverGB.TabIndex = 8;
             this.SolverGB.TabStop = false;
             this.SolverGB.Text = "Solver";
@@ -196,7 +197,7 @@
             this.MakeMazeCB.AutoSize = true;
             this.MakeMazeCB.Checked = true;
             this.MakeMazeCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.MakeMazeCB.Location = new System.Drawing.Point(12, 142);
+            this.MakeMazeCB.Location = new System.Drawing.Point(7, 126);
             this.MakeMazeCB.Name = "MakeMazeCB";
             this.MakeMazeCB.Size = new System.Drawing.Size(53, 17);
             this.MakeMazeCB.TabIndex = 9;
@@ -209,7 +210,7 @@
             this.SolveMazeCB.AutoSize = true;
             this.SolveMazeCB.Checked = true;
             this.SolveMazeCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.SolveMazeCB.Location = new System.Drawing.Point(12, 165);
+            this.SolveMazeCB.Location = new System.Drawing.Point(7, 149);
             this.SolveMazeCB.Name = "SolveMazeCB";
             this.SolveMazeCB.Size = new System.Drawing.Size(53, 17);
             this.SolveMazeCB.TabIndex = 10;
@@ -219,19 +220,26 @@
             // 
             // StartBTN
             // 
-            this.StartBTN.Location = new System.Drawing.Point(63, 142);
+            this.StartBTN.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.StartBTN.Location = new System.Drawing.Point(58, 126);
             this.StartBTN.Name = "StartBTN";
-            this.StartBTN.Size = new System.Drawing.Size(137, 40);
+            this.StartBTN.Size = new System.Drawing.Size(142, 40);
             this.StartBTN.TabIndex = 11;
             this.StartBTN.Text = "Start";
             this.StartBTN.UseVisualStyleBackColor = true;
             this.StartBTN.Click += new System.EventHandler(this.StartBTN_Click);
             // 
+            // BG_Worker
+            // 
+            this.BG_Worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BG_Worker_DoWork);
+            this.BG_Worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BG_Worker_RunWorkerCompleted);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(210, 190);
+            this.BackColor = System.Drawing.SystemColors.Control;
+            this.ClientSize = new System.Drawing.Size(207, 174);
             this.Controls.Add(this.StartBTN);
             this.Controls.Add(this.SolveMazeCB);
             this.Controls.Add(this.MakeMazeCB);
@@ -269,6 +277,7 @@
         private System.Windows.Forms.CheckBox MakeMazeCB;
         private System.Windows.Forms.CheckBox SolveMazeCB;
         private System.Windows.Forms.Button StartBTN;
+        private System.ComponentModel.BackgroundWorker BG_Worker;
     }
 }
 

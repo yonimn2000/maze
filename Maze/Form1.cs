@@ -11,29 +11,6 @@ namespace Maze
             BothCheckBoxesChanged();
         }
 
-        private void StartBTN_Click(object sender, EventArgs e)
-        {
-            MakerGB.Enabled = false;
-            SolverGB.Enabled = false;
-            if (MakeMazeCB.Checked)
-            {
-                Maze.Maker mazeMaker;
-                mazeMaker = new Maze.Maker((int)ColumnsNUD.Value, (int)RowsNUD.Value);
-                mazeMaker.Make();
-                mazeMaker.SaveAsImage(MakeOutputPathTB.Text, !SolveMazeCB.Checked);
-            }
-            if (SolveMazeCB.Checked)
-            {
-                Maze.Solver mazeSolver;
-                mazeSolver = new Maze.Solver(MakeOutputPathTB.Text);
-                mazeSolver.Solve();
-                mazeSolver.SaveSolutionAsImage(SolveOutputPathTB.Text, true);
-            }
-            MakerGB.Enabled = true;
-            SolverGB.Enabled = true;
-            BothCheckBoxesChanged();
-        }
-
         private void MakeMazeCB_CheckedChanged(object sender, EventArgs e)
         {
             BothCheckBoxesChanged();
@@ -50,6 +27,38 @@ namespace Maze
             SolverGB.Enabled = SolveMazeCB.Checked;
             SolverInputPathLBL.Enabled = SolveInputPathTB.Enabled = !(MakeMazeCB.Checked && SolveMazeCB.Checked);
             StartBTN.Enabled = !(!MakeMazeCB.Checked && !SolveMazeCB.Checked);
+        }
+
+        private void StartBTN_Click(object sender, EventArgs e)
+        {
+            BG_Worker.RunWorkerAsync();
+            Cursor = Cursors.WaitCursor;
+            MakeMazeCB.Enabled = SolveMazeCB.Enabled = StartBTN.Enabled = SolverGB.Enabled = MakerGB.Enabled = false;
+        }
+
+        private void BG_Worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            if (MakeMazeCB.Checked)
+            {
+                Maze.Maker mazeMaker;
+                mazeMaker = new Maze.Maker((int)ColumnsNUD.Value, (int)RowsNUD.Value);
+                mazeMaker.Make();
+                mazeMaker.SaveAsImage(MakeOutputPathTB.Text, !SolveMazeCB.Checked);
+            }
+            if (SolveMazeCB.Checked)
+            {
+                Maze.Solver mazeSolver;
+                mazeSolver = new Maze.Solver(MakeOutputPathTB.Text);
+                mazeSolver.Solve();
+                mazeSolver.SaveSolutionAsImage(SolveOutputPathTB.Text, true);
+            }
+        }
+
+        private void BG_Worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            MakeMazeCB.Enabled = SolveMazeCB.Enabled = StartBTN.Enabled = MakerGB.Enabled = SolverGB.Enabled = true;
+            BothCheckBoxesChanged();
+            Cursor = Cursors.Default;
         }
     }
 }
