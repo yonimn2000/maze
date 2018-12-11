@@ -2,7 +2,16 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-
+/*  1 Make the initial cell the current cell and mark it as visited
+    2 While there are unvisited cells
+    2.1 If the current cell has any neighbors which have not been visited
+    2.1.1 Choose randomly one of the unvisited neighbours
+    2.1.2 Push the current cell to the stack
+    2.1.3 Remove the wall between the current cell and the chosen cell
+    2.1.4 Make the chosen cell the current cell and mark it as visited
+    2.2 Else if stack is not empty
+    2.2.1 Pop a cell from the stack
+    2.2.2 Make it the current cell */
 namespace Maze
 {
     class Maze
@@ -11,6 +20,10 @@ namespace Maze
         public int Rows { get; private set; }
         public int Columns { get; private set; }
         public Bitmap Bitmap { get; private set; }
+        public bool IsDone { get; private set; }
+        public Cell CurrentCell { get; private set; }
+        private Stack<Cell> cellsStack = new Stack<Cell>();
+        private Random random = new Random();
 
         public Maze(int columns, int rows)
         {
@@ -24,6 +37,7 @@ namespace Maze
                 Rows--;
             Bitmap = new Bitmap(Columns, Rows);
             Cells = new Cell[Rows * Columns];
+            IsDone = false;
             for (int y = 0; y < Rows; y++)
                 for (int x = 0; x < Columns; x++)
                 {
@@ -49,6 +63,7 @@ namespace Maze
             Rows = Bitmap.Height;
             Columns = Bitmap.Width;
             Cells = new Cell[Rows * Columns];
+            IsDone = false;
             for (int y = 0; y < Rows; y++)
                 for (int x = 0; x < Columns; x++)
                 {
@@ -74,27 +89,27 @@ namespace Maze
         public List<Cell> GetUnvisitedNeighboringCellsList(Cell currentCell, int radius)
         {
             List<Cell> neighboringCells = new List<Cell>();
-            AddNeighboringCellsToList(neighboringCells, CellCoordinate(currentCell.X + radius, currentCell.Y));
-            AddNeighboringCellsToList(neighboringCells, CellCoordinate(currentCell.X - radius, currentCell.Y));
-            AddNeighboringCellsToList(neighboringCells, CellCoordinate(currentCell.X, currentCell.Y + radius));
-            AddNeighboringCellsToList(neighboringCells, CellCoordinate(currentCell.X, currentCell.Y - radius));
+            AddNeighboringCellsToList(CellCoordinate(currentCell.X + radius, currentCell.Y));
+            AddNeighboringCellsToList(CellCoordinate(currentCell.X - radius, currentCell.Y));
+            AddNeighboringCellsToList(CellCoordinate(currentCell.X, currentCell.Y + radius));
+            AddNeighboringCellsToList(CellCoordinate(currentCell.X, currentCell.Y - radius));
             return neighboringCells;
-        }
 
-        private void AddNeighboringCellsToList(List<Cell> neighboringCells, int index)
-        {
-            if (index > 0)
+            void AddNeighboringCellsToList(int index)
             {
-                Cell cell = Cells[index];
-                if (!cell.IsVisited && !cell.IsWall)
-                    neighboringCells.Add(cell);
+                if (index > 0)
+                {
+                    Cell cell = Cells[index];
+                    if (!cell.IsVisited && !cell.IsWall)
+                        neighboringCells.Add(cell);
+                }
             }
         }
-
-        public void SaveAsImage(string fileName)
+        public void SaveAsImage(string fileName, bool openAfterSaving = false)
         {
             Bitmap.Clone(new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), PixelFormat.Format1bppIndexed).Save(fileName);
-            System.Diagnostics.Process.Start(fileName);
+            if (openAfterSaving)
+                System.Diagnostics.Process.Start(fileName);
         }
 
         public class Cell
@@ -113,36 +128,12 @@ namespace Maze
                 IsWall = false;
                 IsSolution = false;
             }
-
-            public override string ToString()
-            {
-                return $"({X}, {Y}), {(IsVisited ? "" : "Not ")}Visited, {(IsWall ? "" : "Not ")}Wall";
-            }
         }
-
-        /*  1 Make the initial cell the current cell and mark it as visited
-            2 While there are unvisited cells
-            2.1 If the current cell has any neighbors which have not been visited
-            2.1.1 Choose randomly one of the unvisited neighbours
-            2.1.2 Push the current cell to the stack
-            2.1.3 Remove the wall between the current cell and the chosen cell
-            2.1.4 Make the chosen cell the current cell and mark it as visited
-            2.2 Else if stack is not empty
-            2.2.1 Pop a cell from the stack
-            2.2.2 Make it the current cell */
 
         public class Maker : Maze
         {
-            public bool IsDone { get; private set; }
-            public Cell CurrentCell { get; private set; }
-            public int StepsCount { get; private set; }
-            private Stack<Cell> cellsStack = new Stack<Cell>();
-            private Random random = new Random();
-
             public Maker(int columns, int rows) : base(columns, rows)
             {
-                IsDone = false;
-                StepsCount = 0;
                 CurrentCell = Cells[CellCoordinate(1, 1)];
             }
 
@@ -167,36 +158,27 @@ namespace Maze
                     CurrentCell = cellsStack.Pop(); //Step 2.2.1 and 2.2.2
                 else
                     IsDone = true;
-                StepsCount++;
-            }
 
-            private void RemoveWallBetween2Cells(Cell currentCell, Cell chosenCell)
-            {
-                if (currentCell.X - chosenCell.X == -2)
-                    SetCellWall(currentCell.X + 1, currentCell.Y, false);
-                else if (currentCell.X - chosenCell.X == 2)
-                    SetCellWall(currentCell.X - 1, currentCell.Y, false);
-                else if (currentCell.Y - chosenCell.Y == -2)
-                    SetCellWall(currentCell.X, currentCell.Y + 1, false);
-                else if (currentCell.Y - chosenCell.Y == 2)
-                    SetCellWall(currentCell.X, currentCell.Y - 1, false);
+                void RemoveWallBetween2Cells(Cell currentCell, Cell chosenCell)
+                {
+                    if (currentCell.X - chosenCell.X == -2)
+                        SetCellWall(currentCell.X + 1, currentCell.Y, false);
+                    else if (currentCell.X - chosenCell.X == 2)
+                        SetCellWall(currentCell.X - 1, currentCell.Y, false);
+                    else if (currentCell.Y - chosenCell.Y == -2)
+                        SetCellWall(currentCell.X, currentCell.Y + 1, false);
+                    else if (currentCell.Y - chosenCell.Y == 2)
+                        SetCellWall(currentCell.X, currentCell.Y - 1, false);
+                }
             }
         }
 
         public class Solver : Maze
         {
-            public bool IsDone { get; private set; }
-            public Cell CurrentCell { get; private set; }
-            public int StepsCount { get; private set; }
-            private Stack<Cell> cellsStack = new Stack<Cell>();
-            private Random random = new Random();
-
             public Solver(string filePath) : base(filePath)
             {
-                IsDone = false;
-                StepsCount = 0;
                 CurrentCell = Cells[CellCoordinate(1, 1)];
-                Cells[CellCoordinate(1, 0)].IsVisited=true;
+                Cells[CellCoordinate(1, 0)].IsVisited = true;
                 Cells[CellCoordinate(1, 0)].IsSolution = true;
                 Cells[CellCoordinate(Columns - 2, Rows - 1)].IsSolution = true;
                 Bitmap.SetPixel(1, 0, Color.Red);
@@ -230,7 +212,6 @@ namespace Maze
                 if (Cells[CellCoordinate(Columns - 2, Rows - 2)].IsSolution)
                 {
                     double value = 0;
-                    System.Diagnostics.Debug.WriteLine(cellsStack.Count);
                     foreach (Cell cell in cellsStack)
                     {
                         Bitmap.SetPixel(cell.X, cell.Y, ColorFromHSV(value, 1, 1));
@@ -238,38 +219,36 @@ namespace Maze
                     }
                     IsDone = true;
                 }
-                StepsCount++;
+
+                Color ColorFromHSV(double hue, double saturation, double value)
+                {
+                    int hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
+                    double f = hue / 60 - Math.Floor(hue / 60);
+                    value = value * 255;
+                    int v = Convert.ToInt32(value);
+                    int p = Convert.ToInt32(value * (1 - saturation));
+                    int q = Convert.ToInt32(value * (1 - f * saturation));
+                    int t = Convert.ToInt32(value * (1 - (1 - f) * saturation));
+                    if (hi == 0)
+                        return Color.FromArgb(255, v, t, p);
+                    else if (hi == 1)
+                        return Color.FromArgb(255, q, v, p);
+                    else if (hi == 2)
+                        return Color.FromArgb(255, p, v, t);
+                    else if (hi == 3)
+                        return Color.FromArgb(255, p, q, v);
+                    else if (hi == 4)
+                        return Color.FromArgb(255, t, p, v);
+                    else
+                        return Color.FromArgb(255, v, p, q);
+                }
             }
 
-            private Color ColorFromHSV(double hue, double saturation, double value)
-            {
-                int hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
-                double f = hue / 60 - Math.Floor(hue / 60);
-
-                value = value * 255;
-                int v = Convert.ToInt32(value);
-                int p = Convert.ToInt32(value * (1 - saturation));
-                int q = Convert.ToInt32(value * (1 - f * saturation));
-                int t = Convert.ToInt32(value * (1 - (1 - f) * saturation));
-
-                if (hi == 0)
-                    return Color.FromArgb(255, v, t, p);
-                else if (hi == 1)
-                    return Color.FromArgb(255, q, v, p);
-                else if (hi == 2)
-                    return Color.FromArgb(255, p, v, t);
-                else if (hi == 3)
-                    return Color.FromArgb(255, p, q, v);
-                else if (hi == 4)
-                    return Color.FromArgb(255, t, p, v);
-                else
-                    return Color.FromArgb(255, v, p, q);
-            }
-
-            public void SaveSolutionAsImage(string fileName)
+            public void SaveSolutionAsImage(string fileName, bool openAfterSaving = false)
             {
                 Bitmap.Clone(new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), PixelFormat.Format24bppRgb).Save(fileName);
-                System.Diagnostics.Process.Start(fileName);
+                if (openAfterSaving)
+                    System.Diagnostics.Process.Start(fileName);
             }
         }
     }

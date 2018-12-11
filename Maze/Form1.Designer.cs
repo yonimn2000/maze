@@ -29,40 +29,30 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.GenerateBTN = new System.Windows.Forms.Button();
             this.ColumnsNUD = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.RowsNUD = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.SavePathTB = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.MakeOutputPathTB = new System.Windows.Forms.TextBox();
+            this.MakerOutputPathLBL = new System.Windows.Forms.Label();
             this.MakerGB = new System.Windows.Forms.GroupBox();
             this.SolverGB = new System.Windows.Forms.GroupBox();
-            this.SolveBTN = new System.Windows.Forms.Button();
             this.SolveOutputPathTB = new System.Windows.Forms.TextBox();
             this.SolveInputPathTB = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.SolverInputPathLBL = new System.Windows.Forms.Label();
+            this.MakeMazeCB = new System.Windows.Forms.CheckBox();
+            this.SolveMazeCB = new System.Windows.Forms.CheckBox();
+            this.StartBTN = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ColumnsNUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RowsNUD)).BeginInit();
             this.MakerGB.SuspendLayout();
             this.SolverGB.SuspendLayout();
             this.SuspendLayout();
             // 
-            // GenerateBTN
-            // 
-            this.GenerateBTN.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.GenerateBTN.Location = new System.Drawing.Point(186, 16);
-            this.GenerateBTN.Name = "GenerateBTN";
-            this.GenerateBTN.Size = new System.Drawing.Size(106, 36);
-            this.GenerateBTN.TabIndex = 2;
-            this.GenerateBTN.Text = "Make and save";
-            this.GenerateBTN.UseVisualStyleBackColor = true;
-            this.GenerateBTN.Click += new System.EventHandler(this.GenerateBTN_Click);
-            // 
             // ColumnsNUD
             // 
-            this.ColumnsNUD.Location = new System.Drawing.Point(63, 32);
+            this.ColumnsNUD.Location = new System.Drawing.Point(6, 33);
             this.ColumnsNUD.Maximum = new decimal(new int[] {
             99999,
             0,
@@ -85,7 +75,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(60, 16);
+            this.label2.Location = new System.Drawing.Point(3, 17);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(47, 13);
             this.label2.TabIndex = 4;
@@ -93,7 +83,7 @@
             // 
             // RowsNUD
             // 
-            this.RowsNUD.Location = new System.Drawing.Point(6, 32);
+            this.RowsNUD.Location = new System.Drawing.Point(63, 33);
             this.RowsNUD.Maximum = new decimal(new int[] {
             99999,
             0,
@@ -116,116 +106,142 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 16);
+            this.label3.Location = new System.Drawing.Point(63, 17);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(34, 13);
             this.label3.TabIndex = 4;
             this.label3.Text = "Rows";
             // 
-            // SavePathTB
+            // MakeOutputPathTB
             // 
-            this.SavePathTB.Location = new System.Drawing.Point(120, 32);
-            this.SavePathTB.Name = "SavePathTB";
-            this.SavePathTB.Size = new System.Drawing.Size(61, 20);
-            this.SavePathTB.TabIndex = 5;
-            this.SavePathTB.Text = "maze.bmp";
+            this.MakeOutputPathTB.Location = new System.Drawing.Point(120, 33);
+            this.MakeOutputPathTB.Name = "MakeOutputPathTB";
+            this.MakeOutputPathTB.Size = new System.Drawing.Size(62, 20);
+            this.MakeOutputPathTB.TabIndex = 5;
+            this.MakeOutputPathTB.Text = "maze.bmp";
             // 
-            // label1
+            // MakerOutputPathLBL
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(117, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(64, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Output Path";
+            this.MakerOutputPathLBL.AutoSize = true;
+            this.MakerOutputPathLBL.Location = new System.Drawing.Point(117, 17);
+            this.MakerOutputPathLBL.Name = "MakerOutputPathLBL";
+            this.MakerOutputPathLBL.Size = new System.Drawing.Size(64, 13);
+            this.MakerOutputPathLBL.TabIndex = 6;
+            this.MakerOutputPathLBL.Text = "Output Path";
             // 
             // MakerGB
             // 
             this.MakerGB.Controls.Add(this.label2);
-            this.MakerGB.Controls.Add(this.label1);
+            this.MakerGB.Controls.Add(this.MakerOutputPathLBL);
             this.MakerGB.Controls.Add(this.ColumnsNUD);
-            this.MakerGB.Controls.Add(this.SavePathTB);
+            this.MakerGB.Controls.Add(this.MakeOutputPathTB);
             this.MakerGB.Controls.Add(this.RowsNUD);
             this.MakerGB.Controls.Add(this.label3);
-            this.MakerGB.Controls.Add(this.GenerateBTN);
             this.MakerGB.Location = new System.Drawing.Point(12, 12);
             this.MakerGB.Name = "MakerGB";
-            this.MakerGB.Size = new System.Drawing.Size(298, 59);
+            this.MakerGB.Size = new System.Drawing.Size(188, 59);
             this.MakerGB.TabIndex = 7;
             this.MakerGB.TabStop = false;
             this.MakerGB.Text = "Maker";
             // 
             // SolverGB
             // 
-            this.SolverGB.Controls.Add(this.SolveBTN);
             this.SolverGB.Controls.Add(this.SolveOutputPathTB);
             this.SolverGB.Controls.Add(this.SolveInputPathTB);
             this.SolverGB.Controls.Add(this.label5);
-            this.SolverGB.Controls.Add(this.label4);
+            this.SolverGB.Controls.Add(this.SolverInputPathLBL);
             this.SolverGB.Location = new System.Drawing.Point(12, 77);
             this.SolverGB.Name = "SolverGB";
-            this.SolverGB.Size = new System.Drawing.Size(298, 59);
+            this.SolverGB.Size = new System.Drawing.Size(188, 59);
             this.SolverGB.TabIndex = 8;
             this.SolverGB.TabStop = false;
             this.SolverGB.Text = "Solver";
             // 
-            // SolveBTN
-            // 
-            this.SolveBTN.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SolveBTN.Location = new System.Drawing.Point(186, 15);
-            this.SolveBTN.Name = "SolveBTN";
-            this.SolveBTN.Size = new System.Drawing.Size(106, 36);
-            this.SolveBTN.TabIndex = 9;
-            this.SolveBTN.Text = "Solve and save";
-            this.SolveBTN.UseVisualStyleBackColor = true;
-            this.SolveBTN.Click += new System.EventHandler(this.SolveBTN_Click);
-            // 
             // SolveOutputPathTB
             // 
-            this.SolveOutputPathTB.Location = new System.Drawing.Point(96, 29);
+            this.SolveOutputPathTB.Location = new System.Drawing.Point(99, 33);
             this.SolveOutputPathTB.Name = "SolveOutputPathTB";
-            this.SolveOutputPathTB.Size = new System.Drawing.Size(85, 20);
+            this.SolveOutputPathTB.Size = new System.Drawing.Size(87, 20);
             this.SolveOutputPathTB.TabIndex = 8;
             this.SolveOutputPathTB.Text = "solution.bmp";
             // 
             // SolveInputPathTB
             // 
-            this.SolveInputPathTB.Location = new System.Drawing.Point(5, 29);
+            this.SolveInputPathTB.Location = new System.Drawing.Point(6, 33);
             this.SolveInputPathTB.Name = "SolveInputPathTB";
-            this.SolveInputPathTB.Size = new System.Drawing.Size(85, 20);
+            this.SolveInputPathTB.Size = new System.Drawing.Size(87, 20);
             this.SolveInputPathTB.TabIndex = 7;
             this.SolveInputPathTB.Text = "maze.bmp";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(93, 13);
+            this.label5.Location = new System.Drawing.Point(94, 17);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(64, 13);
             this.label5.TabIndex = 6;
             this.label5.Text = "Output Path";
             // 
-            // label4
+            // SolverInputPathLBL
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(2, 13);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(56, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Input Path";
+            this.SolverInputPathLBL.AutoSize = true;
+            this.SolverInputPathLBL.Location = new System.Drawing.Point(3, 17);
+            this.SolverInputPathLBL.Name = "SolverInputPathLBL";
+            this.SolverInputPathLBL.Size = new System.Drawing.Size(56, 13);
+            this.SolverInputPathLBL.TabIndex = 6;
+            this.SolverInputPathLBL.Text = "Input Path";
+            // 
+            // MakeMazeCB
+            // 
+            this.MakeMazeCB.AutoSize = true;
+            this.MakeMazeCB.Checked = true;
+            this.MakeMazeCB.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.MakeMazeCB.Location = new System.Drawing.Point(12, 142);
+            this.MakeMazeCB.Name = "MakeMazeCB";
+            this.MakeMazeCB.Size = new System.Drawing.Size(53, 17);
+            this.MakeMazeCB.TabIndex = 9;
+            this.MakeMazeCB.Text = "Make";
+            this.MakeMazeCB.UseVisualStyleBackColor = true;
+            this.MakeMazeCB.CheckedChanged += new System.EventHandler(this.MakeMazeCB_CheckedChanged);
+            // 
+            // SolveMazeCB
+            // 
+            this.SolveMazeCB.AutoSize = true;
+            this.SolveMazeCB.Checked = true;
+            this.SolveMazeCB.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.SolveMazeCB.Location = new System.Drawing.Point(12, 165);
+            this.SolveMazeCB.Name = "SolveMazeCB";
+            this.SolveMazeCB.Size = new System.Drawing.Size(53, 17);
+            this.SolveMazeCB.TabIndex = 10;
+            this.SolveMazeCB.Text = "Solve";
+            this.SolveMazeCB.UseVisualStyleBackColor = true;
+            this.SolveMazeCB.CheckedChanged += new System.EventHandler(this.SolveMazeCB_CheckedChanged);
+            // 
+            // StartBTN
+            // 
+            this.StartBTN.Location = new System.Drawing.Point(63, 142);
+            this.StartBTN.Name = "StartBTN";
+            this.StartBTN.Size = new System.Drawing.Size(137, 40);
+            this.StartBTN.TabIndex = 11;
+            this.StartBTN.Text = "Start";
+            this.StartBTN.UseVisualStyleBackColor = true;
+            this.StartBTN.Click += new System.EventHandler(this.StartBTN_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(317, 142);
+            this.ClientSize = new System.Drawing.Size(210, 190);
+            this.Controls.Add(this.StartBTN);
+            this.Controls.Add(this.SolveMazeCB);
+            this.Controls.Add(this.MakeMazeCB);
             this.Controls.Add(this.SolverGB);
             this.Controls.Add(this.MakerGB);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "Maze Maker and Solver";
+            this.Text = "Maze";
             ((System.ComponentModel.ISupportInitialize)(this.ColumnsNUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.RowsNUD)).EndInit();
             this.MakerGB.ResumeLayout(false);
@@ -233,24 +249,26 @@
             this.SolverGB.ResumeLayout(false);
             this.SolverGB.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.Button GenerateBTN;
         private System.Windows.Forms.NumericUpDown ColumnsNUD;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown RowsNUD;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox SavePathTB;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox MakeOutputPathTB;
+        private System.Windows.Forms.Label MakerOutputPathLBL;
         private System.Windows.Forms.GroupBox MakerGB;
         private System.Windows.Forms.GroupBox SolverGB;
         private System.Windows.Forms.TextBox SolveInputPathTB;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button SolveBTN;
+        private System.Windows.Forms.Label SolverInputPathLBL;
         private System.Windows.Forms.TextBox SolveOutputPathTB;
+        private System.Windows.Forms.CheckBox MakeMazeCB;
+        private System.Windows.Forms.CheckBox SolveMazeCB;
+        private System.Windows.Forms.Button StartBTN;
     }
 }
 
