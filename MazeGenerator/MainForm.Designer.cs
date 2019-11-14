@@ -1,6 +1,6 @@
-﻿namespace Maze
+﻿namespace YonatanMankovich.MazeGenerator
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.ColumnsNUD = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.RowsNUD = new System.Windows.Forms.NumericUpDown();
@@ -234,7 +234,7 @@
             this.BG_Worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BG_Worker_DoWork);
             this.BG_Worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BG_Worker_RunWorkerCompleted);
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -248,8 +248,8 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "Form1";
-            this.Text = "Maze";
+            this.Name = "MainForm";
+            this.Text = "Maze Generator";
             ((System.ComponentModel.ISupportInitialize)(this.ColumnsNUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.RowsNUD)).EndInit();
             this.MakerGB.ResumeLayout(false);
