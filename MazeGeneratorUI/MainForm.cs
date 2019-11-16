@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using YonatanMankovich.MazeGeneratorCore;
 
-namespace YonatanMankovich.MazeGenerator
+namespace YonatanMankovich.MazeGeneratorUI
 {
     public partial class MainForm : Form
     {
@@ -41,15 +42,13 @@ namespace YonatanMankovich.MazeGenerator
         {
             if (MakeMazeCB.Checked)
             {
-                Maze.Maker mazeMaker;
-                mazeMaker = new Maze.Maker((int)ColumnsNUD.Value, (int)RowsNUD.Value);
-                mazeMaker.Make();
-                mazeMaker.SaveAsImage(MakeOutputPathTB.Text, !SolveMazeCB.Checked);
+                MazeGenerator mazeGenerator = new MazeGenerator(new Size((int)ColumnsNUD.Value, (int)RowsNUD.Value));
+                mazeGenerator.Make();
+                mazeGenerator.SaveAsImage(MakeOutputPathTB.Text, !SolveMazeCB.Checked);
             }
             if (SolveMazeCB.Checked)
             {
-                Maze.Solver mazeSolver;
-                mazeSolver = new Maze.Solver(MakeOutputPathTB.Text);
+                MazeSolver mazeSolver = new MazeSolver(MakeOutputPathTB.Text);
                 mazeSolver.Solve();
                 mazeSolver.SaveSolutionAsImage(SolveOutputPathTB.Text, true);
             }

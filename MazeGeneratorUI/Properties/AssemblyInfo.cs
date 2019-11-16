@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("YonatanMankovich.MazeGenerator")]
+[assembly: AssemblyTitle("YonatanMankovich.MazeGeneratorUI")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Yonatan Mankovich")]
-[assembly: AssemblyProduct("YonatanMankovich.MazeGenerator")]
+[assembly: AssemblyProduct("YonatanMankovich.MazeGeneratorUI")]
 [assembly: AssemblyCopyright("Copyright © 2018 Yonatan Mankovich")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

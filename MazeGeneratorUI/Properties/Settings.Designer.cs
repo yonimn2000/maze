@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace YonatanMankovich.MazeGenerator.Properties {
+namespace YonatanMankovich.MazeGeneratorUI.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

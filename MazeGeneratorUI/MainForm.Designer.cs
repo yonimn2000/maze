@@ -1,4 +1,4 @@
-﻿namespace YonatanMankovich.MazeGenerator
+﻿namespace YonatanMankovich.MazeGeneratorUI
 {
     partial class MainForm
     {

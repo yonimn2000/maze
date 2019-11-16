@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B755D4B0-5764-4FBA-AF72-11812C104DA7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>YonatanMankovich.MazeGenerator</RootNamespace>
-    <AssemblyName>MazeGenerator</AssemblyName>
+    <RootNamespace>YonatanMankovich.MazeGeneratorUI</RootNamespace>
+    <AssemblyName>Maze Generator</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
