@@ -44,14 +44,17 @@ namespace YonatanMankovich.MazeGeneratorUI
             {
                 MazeGenerator mazeGenerator = new MazeGenerator(new Size((int)ColumnsNUD.Value, (int)RowsNUD.Value));
                 mazeGenerator.Make();
-                mazeGenerator.SaveAsImage(MakeOutputPathTB.Text, !SolveMazeCB.Checked);
+                mazeGenerator.SaveAsImage(MakeOutputPathTB.Text);
+                mazeGenerator = null;
             }
             if (SolveMazeCB.Checked)
             {
-                MazeSolver mazeSolver = new MazeSolver(MakeOutputPathTB.Text);
+                MazeSolver mazeSolver = new MazeSolver(SolveInputPathTB.Text);
                 mazeSolver.Solve();
-                mazeSolver.SaveSolutionAsImage(SolveOutputPathTB.Text, true);
+                mazeSolver.SaveSolutionAsImage(SolveOutputPathTB.Text);
+                mazeSolver = null;
             }
+            GC.Collect();
         }
 
         private void BG_Worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
