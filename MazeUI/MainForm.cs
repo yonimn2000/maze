@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using YonatanMankovich.MazeGeneratorCore;
+using YonatanMankovich.MazeCore;
 
-namespace YonatanMankovich.MazeGeneratorUI
+namespace YonatanMankovich.MazeUI
 {
     public partial class MainForm : Form
     {
@@ -43,24 +43,32 @@ namespace YonatanMankovich.MazeGeneratorUI
 
         private void BG_Worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            if (MakeMazeCB.Checked)
+            try
             {
-                MazeGenerator mazeGenerator = new MazeGenerator(new Size((int)ColumnsNUD.Value, (int)RowsNUD.Value));
-                mazeGenerator.Generate();
-                mazeGenerator.SaveAsImage(MakeOutputPathTB.Text);
-                mazeGenerator = null;
-                if (!SolveMazeCB.Checked)
-                    System.Diagnostics.Process.Start(MakeOutputPathTB.Text);
+                if (MakeMazeCB.Checked)
+                {
+                    MazeGenerator mazeGenerator = new MazeGenerator(new Size((int)ColumnsNUD.Value, (int)RowsNUD.Value));
+                    mazeGenerator.Generate();
+                    mazeGenerator.SaveAsImage(MakeOutputPathTB.Text);
+                    mazeGenerator = null;
+                    if (!SolveMazeCB.Checked)
+                        System.Diagnostics.Process.Start(MakeOutputPathTB.Text);
+                }
+                if (SolveMazeCB.Checked)
+                {
+                    MazeSolver mazeSolver = new MazeSolver(SolveInputPathTB.Text);
+                    mazeSolver.Solve();
+                    mazeSolver.SaveSolutionAsImage(SolveOutputPathTB.Text);
+                    mazeSolver = null;
+                    System.Diagnostics.Process.Start(SolveOutputPathTB.Text);
+                }
+                GC.Collect();
             }
-            if (SolveMazeCB.Checked)
+            catch (Exception ex)
             {
-                MazeSolver mazeSolver = new MazeSolver(SolveInputPathTB.Text);
-                mazeSolver.Solve();
-                mazeSolver.SaveSolutionAsImage(SolveOutputPathTB.Text);
-                mazeSolver = null;
-                System.Diagnostics.Process.Start(SolveOutputPathTB.Text);
+                MessageBox.Show(ex.Message);
+                throw;
             }
-            GC.Collect();
         }
 
         private void BG_Worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)

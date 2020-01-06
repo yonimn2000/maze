@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B755D4B0-5764-4FBA-AF72-11812C104DA7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>YonatanMankovich.MazeGeneratorUI</RootNamespace>
-    <AssemblyName>Maze Generator</AssemblyName>
+    <RootNamespace>YonatanMankovich.MazeUI</RootNamespace>
+    <AssemblyName>Maze</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -91,9 +91,9 @@
     <Content Include="MazeIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MazeGeneratorCore\MazeGeneratorCore.csproj">
+    <ProjectReference Include="..\MazeCore\MazeCore.csproj">
       <Project>{8464238b-7474-4f24-83e4-ed761a7ee16d}</Project>
-      <Name>MazeGeneratorCore</Name>
+      <Name>MazeCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

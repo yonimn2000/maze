@@ -1,4 +1,4 @@
-﻿namespace YonatanMankovich.MazeGeneratorUI
+﻿namespace YonatanMankovich.MazeUI
 {
     partial class MainForm
     {
@@ -249,7 +249,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainForm";
-            this.Text = "Maze Generator";
+            this.Text = "Maze";
             ((System.ComponentModel.ISupportInitialize)(this.ColumnsNUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.RowsNUD)).EndInit();
             this.MakerGB.ResumeLayout(false);

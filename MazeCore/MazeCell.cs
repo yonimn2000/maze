@@ -1,4 +1,4 @@
-﻿namespace YonatanMankovich.MazeGeneratorCore
+﻿namespace YonatanMankovich.MazeCore
 {
     public class MazeCell
     {

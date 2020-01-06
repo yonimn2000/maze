@@ -16,7 +16,7 @@ using System.Drawing.Imaging;
     2.2.2 Make it the current cell 
 Source: https://en.wikipedia.org/wiki/Maze_generation_algorithm#Recursive_backtracker */
 
-namespace YonatanMankovich.MazeGeneratorCore
+namespace YonatanMankovich.MazeCore
 {
     public abstract class Maze
     {

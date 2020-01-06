@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace YonatanMankovich.MazeGeneratorUI
+namespace YonatanMankovich.MazeUI
 {
     static class Program
     {

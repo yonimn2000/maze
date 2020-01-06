@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace YonatanMankovich.MazeGeneratorUI.Properties {
+namespace YonatanMankovich.MazeUI.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace YonatanMankovich.MazeGeneratorUI.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("YonatanMankovich.MazeGeneratorUI.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("YonatanMankovich.MazeUI.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

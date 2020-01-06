@@ -2,11 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>YonatanMankovich.MazeGeneratorCore</AssemblyName>
-    <RootNamespace>YonatanMankovich.MazeGeneratorCore</RootNamespace>
+    <AssemblyName>YonatanMankovich.MazeCore</AssemblyName>
+    <RootNamespace>YonatanMankovich.MazeCore</RootNamespace>
     <Version>3.1.0</Version>
     <Copyright>© 2018 Yonatan Mankovich</Copyright>
     <Authors>Yonatan Mankovich</Authors>
+    <PackageId>YonatanMankovich.MazeCore</PackageId>
+    <Product>YonatanMankovich.MazeCore</Product>
   </PropertyGroup>
 
   <ItemGroup>

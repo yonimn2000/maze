@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace YonatanMankovich.MazeGeneratorCore
+namespace YonatanMankovich.MazeCore
 {
     public class MazeGenerator : Maze
     {
