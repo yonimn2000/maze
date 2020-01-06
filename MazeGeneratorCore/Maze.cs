@@ -18,115 +18,59 @@ Source: https://en.wikipedia.org/wiki/Maze_generation_algorithm#Recursive_backtr
 
 namespace YonatanMankovich.MazeGeneratorCore
 {
-    public class Maze
+    public abstract class Maze
     {
-        public Cell[] Cells { get; internal set; }
+        internal MazeCell[,] Cells { get; set; }
         public Size Size { get; internal set; }
-        public Bitmap Bitmap { get; internal set; }
         public bool IsDone { get; internal set; }
-        public Cell CurrentCell { get; internal set; }
-        internal Stack<Cell> cellsStack = new Stack<Cell>();
-        internal Random random = new Random();
+        internal MazeCell CurrentCell { get; set; }
 
-        public Maze(Size size)
+        internal Stack<MazeCell> CellsStack { get; set; } = new Stack<MazeCell>();
+        internal Random Random { get; set; } = new Random();
+
+        internal Maze(Size size)
         {
             if (size.Height < 3 || size.Width < 3)
-                throw new Exception($"Too small maze ({size.Width}x{size.Height})");
-            Size = size;
-            if (Size.Width % 2 == 0)
-                Size = new Size(Size.Width - 1, Size.Height);
-            if (Size.Height % 2 == 0)
-                Size = new Size(Size.Width, Size.Height - 1);
-            Bitmap = new Bitmap(Size.Width, Size.Height);
-            Cells = new Cell[Size.Height * Size.Width];
+                throw new Exception($"Can't create a maze smaller than 3x3 (Given: {size})");
+            Size = new Size(size.Width - (size.Width % 2 == 0 ? 1 : 0), size.Height - (size.Height % 2 == 0 ? 1 : 0)); // Keep dimensions odd.
+            Cells = new MazeCell[Size.Height, Size.Width];
             IsDone = false;
-            for (int y = 0; y < Size.Height; y++)
-                for (int x = 0; x < Size.Width; x++)
-                {
-                    Cells[CellCoordinate(x, y)] = new Cell(x, y);
-                    if (y == 0 || y == Size.Height - 1 || x == 0 || x == Size.Width - 1 || x % 2 == 0 || y % 2 == 0)
-                        SetCellWall(x, y, true); //Set walls around
-                    else
-                        SetCellWall(x, y, false);
-                }
-            SetCellWall(1, 0, false); //Start cell
-            SetCellWall(Size.Width - 2, Size.Height - 1, false); //End cell
         }
 
-        /// <summary> Creates a maze from an image file. </summary>
-        internal Maze(string path)
-        {
-            Bitmap image = new Bitmap(path);
-            Bitmap = new Bitmap(image);
-            image.Dispose();
-            Size = new Size(Bitmap.Width, Bitmap.Height);
-            Cells = new Cell[Size.Height * Size.Width];
-            IsDone = false;
-            for (int y = 0; y < Size.Height; y++)
-                for (int x = 0; x < Size.Width; x++)
-                {
-                    Cells[CellCoordinate(x, y)] = new Cell(x, y);
-                    Cells[CellCoordinate(x, y)].IsWall = Bitmap.GetPixel(x, y) == Color.FromArgb(255, 0, 0, 0);
-                }
-            Bitmap = Bitmap.Clone(new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), PixelFormat.Format24bppRgb);
-        }
-
-        internal void SetCellWall(int x, int y, bool isWall)
-        {
-            Cells[CellCoordinate(x, y)].IsWall = isWall;
-            Bitmap.SetPixel(x, y, isWall ? Color.Black : Color.White);
-        }
-
-        public int CellCoordinate(int x, int y)
+        internal bool IsCoordinateOnMaze(int x, int y)
         {
             if (y < 0 || x < 0 || x > Size.Width - 1 || y > Size.Height - 1)
-                return -1;
-            return x + y * Size.Width;
+                return false;
+            return true;
         }
 
-        public List<Cell> GetUnvisitedNeighboringCellsList(Cell currentCell, int radius)
+        internal List<MazeCell> GetUnvisitedNeighboringCellsList(MazeCell currentCell, ushort radius)
         {
-            List<Cell> neighboringCells = new List<Cell>();
-            AddNeighboringCellsToList(CellCoordinate(currentCell.X + radius, currentCell.Y));
-            AddNeighboringCellsToList(CellCoordinate(currentCell.X - radius, currentCell.Y));
-            AddNeighboringCellsToList(CellCoordinate(currentCell.X, currentCell.Y + radius));
-            AddNeighboringCellsToList(CellCoordinate(currentCell.X, currentCell.Y - radius));
+            List<MazeCell> neighboringCells = new List<MazeCell>();
+            AddNeighboringCellsToList((ushort)(currentCell.X + radius), currentCell.Y);
+            AddNeighboringCellsToList((ushort)(currentCell.X - radius), currentCell.Y);
+            AddNeighboringCellsToList(currentCell.X, (ushort)(currentCell.Y + radius));
+            AddNeighboringCellsToList(currentCell.X, (ushort)(currentCell.Y - radius));
             return neighboringCells;
 
-            void AddNeighboringCellsToList(int index)
+            void AddNeighboringCellsToList(ushort x, ushort y)
             {
-                if (index > 0)
+                if (IsCoordinateOnMaze(x, y))
                 {
-                    Cell cell = Cells[index];
+                    MazeCell cell = Cells[y, x];
                     if (!cell.IsVisited && !cell.IsWall)
                         neighboringCells.Add(cell);
                 }
             }
         }
 
-        public void SaveAsImage(string fileName, bool openAfterSaving = false)
+        public void SaveAsImage(string fileName)
         {
-            Bitmap.Clone(new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), PixelFormat.Format1bppIndexed).Save(fileName);
-            if (openAfterSaving)
-                System.Diagnostics.Process.Start(fileName);
-        }
-
-        public class Cell
-        {
-            public int X;
-            public int Y;
-            public bool IsVisited;
-            public bool IsWall;
-            public bool IsSolution;
-
-            public Cell(int x, int y)
-            {
-                X = x;
-                Y = y;
-                IsVisited = false;
-                IsWall = false;
-                IsSolution = false;
-            }
+            Bitmap bitmap = new Bitmap(Size.Width, Size.Height);
+            for (ushort y = 0; y < Size.Height; y++)
+                for (ushort x = 0; x < Size.Width; x++)
+                    bitmap.SetPixel(x, y, Cells[y, x].IsWall ? Color.Black : Color.White);
+            bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format1bppIndexed).Save(fileName);
         }
     }
 }

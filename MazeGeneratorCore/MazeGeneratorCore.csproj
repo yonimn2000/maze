@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>YonatanMankovich.MazeGeneratorCore</AssemblyName>
     <RootNamespace>YonatanMankovich.MazeGeneratorCore</RootNamespace>
-    <Version>3.0.0</Version>
+    <Version>3.1.0</Version>
     <Copyright>© 2018 Yonatan Mankovich</Copyright>
     <Authors>Yonatan Mankovich</Authors>
   </PropertyGroup>
