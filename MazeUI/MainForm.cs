@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using YonatanMankovich.MazeCore;
+using YonatanMankovich.MazeCore.Exceptions;
 using YonatanMankovich.MazeUI.Properties;
 
 namespace YonatanMankovich.MazeUI
@@ -84,7 +85,7 @@ namespace YonatanMankovich.MazeUI
 
                 GC.Collect();
             }
-            catch (Exception ex)
+            catch (MazeException ex)
             {
                 MessageBox.Show(ex.Message);
                 throw;

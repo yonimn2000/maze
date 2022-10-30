@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using YonatanMankovich.MazeCore.Exceptions;
 
 namespace YonatanMankovich.MazeCore
 {
     public class MazeSolver : Maze
     {
-        private string InputFile { get; set; }
-        private List<Point> Path { get; set; } = new List<Point>();
+        private string InputFile { get; }
+        private List<Point> Path { get; } = new List<Point>();
 
         public MazeSolver(string inputFile) : base(GetImageSize(inputFile))
         {
@@ -20,10 +21,12 @@ namespace YonatanMankovich.MazeCore
         private void CreateMazeFromImage()
         {
             Bitmap image = new Bitmap(InputFile);
+
             for (ushort y = 0; y < image.Height; y++)
                 for (ushort x = 0; x < image.Width; x++)
                 {
                     Cells[y, x] = new MazeCell(x, y);
+
                     if (image.GetPixel(x, y) == Color.FromArgb(255, 0, 0, 0))
                         Cells[y, x].IsWall = true;
                 }
@@ -39,30 +42,38 @@ namespace YonatanMankovich.MazeCore
         {
             Path.Add(new Point(1, 0));
             Cells[0, 1].IsVisited = true;
+
             while (!IsDone) //Step 2
                 SolveStep();
+
             Path.Add(new Point(Size.Width - 2, Size.Width - 1));
         }
 
         public void SolveStep()
         {
             CurrentCell.IsVisited = true; //Step 2.1.4
+
             List<MazeCell> neighboringCells = GetUnvisitedNeighboringCellsList(CurrentCell, 1);
+
             if (neighboringCells.Count > 0) //Step 2.1
             {
                 MazeCell chosenCell = neighboringCells[Random.Next(neighboringCells.Count)]; //Step 2.1.1
-                CellsStack.Push(CurrentCell); //Step 2.1.2
+
+                CellStack.Push(CurrentCell); //Step 2.1.2
                 CurrentCell = chosenCell; //Step 2.1.4
             }
-            else if (CellsStack.Count > 0) //Step 2.2
-                CurrentCell = CellsStack.Pop(); //Step 2.2.1 and 2.2.2
-            else if (CellsStack.Count == 0)
-                throw new Exception("No solution.");
+            else if (CellStack.Count > 0) //Step 2.2
+                CurrentCell = CellStack.Pop(); //Step 2.2.1 and 2.2.2
+            else if (CellStack.Count == 0)
+                throw new MazeUnsolvableException();
+
             if (CurrentCell.X == Size.Width - 2 && CurrentCell.Y == Size.Height - 2)
             {
                 Path.Add(new Point(CurrentCell.X, CurrentCell.Y));
-                foreach (MazeCell cell in CellsStack)
+
+                foreach (MazeCell cell in CellStack)
                     Path.Add(new Point(cell.X, cell.Y));
+
                 IsDone = true;
             }
         }
@@ -71,6 +82,7 @@ namespace YonatanMankovich.MazeCore
         {
             Bitmap image = new Bitmap(InputFile);
             Bitmap solutionImage = image.Clone(new Rectangle(0, 0, image.Width, image.Height), PixelFormat.Format24bppRgb);
+
             for (int i = 0; i < Path.Count; i++)
                 solutionImage.SetPixel(Path[i].X, Path[i].Y, ColorFromHSV(360 * i / Path.Count, 1, 1));
 
@@ -84,11 +96,14 @@ namespace YonatanMankovich.MazeCore
         {
             int hi = (int)Math.Floor(hue / 60) % 6;
             double f = hue / 60 - Math.Floor(hue / 60);
+
             value *= 255;
+
             int v = (int)value;
             int p = (int)(value * (1 - saturation));
             int q = (int)(value * (1 - f * saturation));
             int t = (int)(value * (1 - (1 - f) * saturation));
+
             if (hi == 0)
                 return Color.FromArgb(255, v, t, p);
             else if (hi == 1)

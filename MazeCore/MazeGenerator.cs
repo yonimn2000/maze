@@ -17,9 +17,12 @@ namespace YonatanMankovich.MazeCore
             for (ushort y = 0; y < Size.Height; y++)
                 for (ushort x = 0; x < Size.Width; x++)
                 {
-                    Cells[y, x] = new MazeCell(x, y);
-                    Cells[y, x].IsWall = y == 0 || y == Size.Height - 1 || x == 0 || x == Size.Width - 1 || x % 2 == 0 || y % 2 == 0; // Set walls around and inside.
+                    Cells[y, x] = new MazeCell(x, y)
+                    {
+                        IsWall = y == 0 || y == Size.Height - 1 || x == 0 || x == Size.Width - 1 || x % 2 == 0 || y % 2 == 0 // Set walls around and inside.
+                    };
                 }
+
             Cells[0, 1].IsWall = false; //Start cell
             Cells[Size.Height - 1, Size.Width - 2].IsWall = false; //End cell
         }
@@ -33,16 +36,18 @@ namespace YonatanMankovich.MazeCore
         public void GenerateStep()
         {
             CurrentCell.IsVisited = true; //Step 2.1.4
+
             List<MazeCell> neighboringCells = GetUnvisitedNeighboringCellsList(CurrentCell, 2);
+
             if (neighboringCells.Count > 0) //Step 2.1
             {
                 MazeCell chosenCell = neighboringCells[Random.Next(neighboringCells.Count)]; //Step 2.1.1
-                CellsStack.Push(CurrentCell); //Step 2.1.2
+                CellStack.Push(CurrentCell); //Step 2.1.2
                 RemoveWallBetween2Cells(CurrentCell, chosenCell); //Step 2.1.3
                 CurrentCell = chosenCell; //Step 2.1.4
             }
-            else if (CellsStack.Count > 0) //Step 2.2
-                CurrentCell = CellsStack.Pop(); //Step 2.2.1 and 2.2.2
+            else if (CellStack.Count > 0) //Step 2.2
+                CurrentCell = CellStack.Pop(); //Step 2.2.1 and 2.2.2
             else
                 IsDone = true;
 

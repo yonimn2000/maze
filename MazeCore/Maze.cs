@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using YonatanMankovich.MazeCore.Exceptions;
 
 /* Steps:
     1 Make the initial cell the current cell and mark it as visited
@@ -21,18 +22,19 @@ namespace YonatanMankovich.MazeCore
 {
     public abstract class Maze
     {
-        internal MazeCell[,] Cells { get; set; }
         public Size Size { get; internal set; }
         public bool IsDone { get; internal set; }
-        internal MazeCell CurrentCell { get; set; }
 
-        internal Stack<MazeCell> CellsStack { get; set; } = new Stack<MazeCell>();
-        internal Random Random { get; set; } = new Random();
+        internal MazeCell[,] Cells { get; }
+        internal MazeCell CurrentCell { get; set; }
+        internal Stack<MazeCell> CellStack { get; } = new Stack<MazeCell>();
+        internal Random Random { get; } = new Random();
 
         internal Maze(Size size)
         {
             if (size.Height < 3 || size.Width < 3)
-                throw new Exception($"Can't create a maze smaller than 3x3 (Given: {size})");
+                throw new MazeTooSmallException(size);
+
             Size = new Size(size.Width - (size.Width % 2 == 0 ? 1 : 0), size.Height - (size.Height % 2 == 0 ? 1 : 0)); // Keep dimensions odd.
             Cells = new MazeCell[Size.Height, Size.Width];
             IsDone = false;
@@ -40,18 +42,21 @@ namespace YonatanMankovich.MazeCore
 
         internal bool IsCoordinateOnMaze(int x, int y)
         {
-            if (y < 0 || x < 0 || x > Size.Width - 1 || y > Size.Height - 1)
+            if (y < 0 || x < 0 || x >= Size.Width || y >= Size.Height)
                 return false;
+
             return true;
         }
 
         internal List<MazeCell> GetUnvisitedNeighboringCellsList(MazeCell currentCell, ushort radius)
         {
-            List<MazeCell> neighboringCells = new List<MazeCell>();
+            List<MazeCell> neighboringCells = new List<MazeCell>(4);
+
             AddNeighboringCellsToList((ushort)(currentCell.X + radius), currentCell.Y);
             AddNeighboringCellsToList((ushort)(currentCell.X - radius), currentCell.Y);
             AddNeighboringCellsToList(currentCell.X, (ushort)(currentCell.Y + radius));
             AddNeighboringCellsToList(currentCell.X, (ushort)(currentCell.Y - radius));
+
             return neighboringCells;
 
             void AddNeighboringCellsToList(ushort x, ushort y)
@@ -68,6 +73,7 @@ namespace YonatanMankovich.MazeCore
         public void SaveAsImage(string fileName, decimal scaleFactor = 1)
         {
             Bitmap bitmap = new Bitmap(Size.Width, Size.Height);
+
             for (ushort y = 0; y < Size.Height; y++)
                 for (ushort x = 0; x < Size.Width; x++)
                     bitmap.SetPixel(x, y, Cells[y, x].IsWall ? Color.Black : Color.White);
