@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>YonatanMankovich.MazeCore</AssemblyName>
-    <RootNamespace>YonatanMankovich.MazeCore</RootNamespace>
-    <Version>3.1.0</Version>
-    <Copyright>© 2018 Yonatan Mankovich</Copyright>
-    <Authors>Yonatan Mankovich</Authors>
-    <PackageId>YonatanMankovich.MazeCore</PackageId>
-    <Product>YonatanMankovich.MazeCore</Product>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<AssemblyName>YonatanMankovich.MazeCore</AssemblyName>
+		<RootNamespace>YonatanMankovich.MazeCore</RootNamespace>
+		<Version>3.2.0</Version>
+		<Copyright>© 2018 Yonatan Mankovich</Copyright>
+		<Authors>Yonatan Mankovich</Authors>
+		<PackageId>YonatanMankovich.MazeCore</PackageId>
+		<Product>YonatanMankovich.MazeCore</Product>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-  </ItemGroup>
-  
+	<ItemGroup>
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+	</ItemGroup>
+
 </Project>
