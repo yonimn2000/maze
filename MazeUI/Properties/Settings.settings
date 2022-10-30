@@ -11,9 +11,6 @@
     <Setting Name="UpscaleCB" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="OpenCB" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="Columns" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">1000</Value>
     </Setting>

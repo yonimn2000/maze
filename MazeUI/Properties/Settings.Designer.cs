@@ -61,18 +61,6 @@ namespace YonatanMankovich.MazeUI.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool OpenCB {
-            get {
-                return ((bool)(this["OpenCB"]));
-            }
-            set {
-                this["OpenCB"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public decimal Columns {
             get {

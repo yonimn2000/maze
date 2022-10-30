@@ -45,56 +45,80 @@ namespace YonatanMankovich.MazeUI
             // Keep dimensions odd.
             ColumnsNUD.Value -= (ColumnsNUD.Value % 2 == 0 ? 1 : 0);
             RowsNUD.Value -= (RowsNUD.Value % 2 == 0 ? 1 : 0);
+            StatusLBL.LinkArea = new LinkArea();
             BG_Worker.RunWorkerAsync();
             Cursor = Cursors.WaitCursor;
-            MakeCB.Enabled = SolveCB.Enabled = UpscaleCB.Enabled = OpenCB.Enabled = StartBTN.Enabled = false;
+            MakeCB.Enabled = SolveCB.Enabled = UpscaleCB.Enabled = StartBTN.Enabled = false;
         }
 
         private void BG_Worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             try
             {
+                SetStatusText("Started...");
                 Directory.CreateDirectory(OutputFolderPath);
 
                 if (MakeCB.Checked)
                 {
+                    SetStatusText("Initializing maze generator...");
                     MazeGenerator mazeGenerator = new MazeGenerator(new Size((int)ColumnsNUD.Value, (int)RowsNUD.Value));
+                    SetStatusText("Generating maze...");
                     mazeGenerator.Generate();
+                    SetStatusText("Saving generated maze...");
                     mazeGenerator.SaveAsImage(MazePath);
 
                     if (UpscaleCB.Checked)
+                    {
+                        SetStatusText("Upscaling generated maze...");
                         mazeGenerator.SaveAsImage(UpscaleMazePath, UpscalerNUD.Value);
+                    }
 
                     mazeGenerator = null;
                 }
 
                 if (SolveCB.Checked)
                 {
-                    MazeSolver mazeSolver = new MazeSolver(MazePath);
-                    mazeSolver.Solve();
-                    mazeSolver.SaveSolutionAsImage(SolutionPath);
+                    if (File.Exists(MazePath))
+                    {
+                        SetStatusText("Initializing maze solver...");
+                        MazeSolver mazeSolver = new MazeSolver(MazePath);
+                        SetStatusText("Solving maze...");
+                        mazeSolver.Solve();
+                        SetStatusText("Saving solved maze...");
+                        mazeSolver.SaveSolutionAsImage(SolutionPath);
 
-                    if (UpscaleCB.Checked)
-                        mazeSolver.SaveSolutionAsImage(UpscaleSolutionPath, UpscalerNUD.Value);
-
-                    mazeSolver = null;
+                        if (UpscaleCB.Checked)
+                        {
+                            SetStatusText("Upscaling solved maze...");
+                            mazeSolver.SaveSolutionAsImage(UpscaleSolutionPath, UpscalerNUD.Value);
+                        }
+                        mazeSolver = null;
+                    }
+                    else
+                        throw new MazeException("Maze file was not found...");
                 }
 
-                if (OpenCB.Checked)
-                    Process.Start(OutputFolderPath);
+                StatusLBL.Invoke(new Action(() =>
+                {
+                    string linkText = "View results here";
+                    StatusLBL.Text = "Done! " + linkText;
+                    StatusLBL.LinkArea = new LinkArea(StatusLBL.Text.IndexOf(linkText), linkText.Length);
+                }));
 
                 GC.Collect();
             }
             catch (MazeException ex)
             {
                 MessageBox.Show(ex.Message);
-                throw;
+                SetStatusText("Status: Ready");
             }
         }
 
+        private void SetStatusText(string text) => StatusLBL.Invoke(new Action(() => { StatusLBL.Text = text; }));
+
         private void BG_Worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            MakeCB.Enabled = SolveCB.Enabled = UpscaleCB.Enabled = OpenCB.Enabled = StartBTN.Enabled = true;
+            MakeCB.Enabled = SolveCB.Enabled = UpscaleCB.Enabled = StartBTN.Enabled = true;
             BothCheckBoxesChanged();
             Cursor = Cursors.Default;
         }
@@ -102,6 +126,11 @@ namespace YonatanMankovich.MazeUI
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Settings.Default.Save();
+        }
+
+        private void StatusLBL_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(OutputFolderPath);
         }
     }
 }
