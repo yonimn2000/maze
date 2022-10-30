@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
 /* Steps:
@@ -64,13 +65,32 @@ namespace YonatanMankovich.MazeCore
             }
         }
 
-        public void SaveAsImage(string fileName)
+        public void SaveAsImage(string fileName, decimal scaleFactor = 1)
         {
             Bitmap bitmap = new Bitmap(Size.Width, Size.Height);
             for (ushort y = 0; y < Size.Height; y++)
                 for (ushort x = 0; x < Size.Width; x++)
                     bitmap.SetPixel(x, y, Cells[y, x].IsWall ? Color.Black : Color.White);
-            bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format1bppIndexed).Save(fileName);
+
+            Bitmap output = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format1bppIndexed);
+
+            if (scaleFactor > 1)
+                UpscaleBitmap(output, scaleFactor).Save(fileName);
+            else
+                output.Save(fileName);
+        }
+
+        protected Bitmap UpscaleBitmap(Bitmap bitmap, decimal scaleFactor)
+        {
+            Bitmap upscaled = new Bitmap((int)Math.Round(bitmap.Width * scaleFactor), (int)Math.Round(bitmap.Height * scaleFactor));
+
+            using (Graphics graphics = Graphics.FromImage(upscaled))
+            {
+                graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                graphics.DrawImage(bitmap, new Rectangle(Point.Empty, upscaled.Size));
+            }
+
+            return upscaled;
         }
     }
 }

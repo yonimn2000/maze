@@ -67,13 +67,17 @@ namespace YonatanMankovich.MazeCore
             }
         }
 
-        public void SaveSolutionAsImage(string fileName)
+        public void SaveSolutionAsImage(string fileName, decimal scaleFactor = 1)
         {
             Bitmap image = new Bitmap(InputFile);
             Bitmap solutionImage = image.Clone(new Rectangle(0, 0, image.Width, image.Height), PixelFormat.Format24bppRgb);
             for (int i = 0; i < Path.Count; i++)
                 solutionImage.SetPixel(Path[i].X, Path[i].Y, ColorFromHSV(360 * i / Path.Count, 1, 1));
-            solutionImage.Save(fileName);
+
+            if (scaleFactor > 1)
+                UpscaleBitmap(solutionImage, scaleFactor).Save(fileName);
+            else
+                solutionImage.Save(fileName);
         }
 
         private static Color ColorFromHSV(double hue, double saturation, double value)

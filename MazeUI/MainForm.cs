@@ -1,15 +1,26 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using YonatanMankovich.MazeCore;
+using YonatanMankovich.MazeUI.Properties;
 
 namespace YonatanMankovich.MazeUI
 {
     public partial class MainForm : Form
     {
+        private static readonly string OutputFolderPath = Directory.GetCurrentDirectory() + "\\Output\\";
+        private static readonly string MazePath = OutputFolderPath + "Maze.bmp";
+        private static readonly string SolutionPath = OutputFolderPath + "Solution.bmp";
+        private static readonly string UpscaleMazePath = OutputFolderPath + "MazeUpscaled.bmp";
+        private static readonly string UpscaleSolutionPath = OutputFolderPath + "SolutionUpscaled.bmp";
+
         public MainForm()
         {
             InitializeComponent();
+            UpscalerNUD.DecimalPlaces = 1;
+            UpscalerNUD.Increment = 0.1M;
             BothCheckBoxesChanged();
         }
 
@@ -25,10 +36,7 @@ namespace YonatanMankovich.MazeUI
 
         private void BothCheckBoxesChanged()
         {
-            MakerGB.Enabled = MakeMazeCB.Checked;
-            SolverGB.Enabled = SolveMazeCB.Checked;
-            SolverInputPathLBL.Enabled = SolveInputPathTB.Enabled = !(MakeMazeCB.Checked && SolveMazeCB.Checked);
-            StartBTN.Enabled = !(!MakeMazeCB.Checked && !SolveMazeCB.Checked);
+            StartBTN.Enabled = MakeCB.Checked || SolveCB.Checked;
         }
 
         private void StartBTN_Click(object sender, EventArgs e)
@@ -38,30 +46,42 @@ namespace YonatanMankovich.MazeUI
             RowsNUD.Value -= (RowsNUD.Value % 2 == 0 ? 1 : 0);
             BG_Worker.RunWorkerAsync();
             Cursor = Cursors.WaitCursor;
-            MakeMazeCB.Enabled = SolveMazeCB.Enabled = StartBTN.Enabled = SolverGB.Enabled = MakerGB.Enabled = false;
+            MakeCB.Enabled = SolveCB.Enabled = UpscaleCB.Enabled = OpenCB.Enabled = StartBTN.Enabled = false;
         }
 
         private void BG_Worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             try
             {
-                if (MakeMazeCB.Checked)
+                Directory.CreateDirectory(OutputFolderPath);
+
+                if (MakeCB.Checked)
                 {
                     MazeGenerator mazeGenerator = new MazeGenerator(new Size((int)ColumnsNUD.Value, (int)RowsNUD.Value));
                     mazeGenerator.Generate();
-                    mazeGenerator.SaveAsImage(MakeOutputPathTB.Text);
+                    mazeGenerator.SaveAsImage(MazePath);
+
+                    if (UpscaleCB.Checked)
+                        mazeGenerator.SaveAsImage(UpscaleMazePath, UpscalerNUD.Value);
+
                     mazeGenerator = null;
-                    if (!SolveMazeCB.Checked)
-                        System.Diagnostics.Process.Start(MakeOutputPathTB.Text);
                 }
-                if (SolveMazeCB.Checked)
+
+                if (SolveCB.Checked)
                 {
-                    MazeSolver mazeSolver = new MazeSolver(SolveInputPathTB.Text);
+                    MazeSolver mazeSolver = new MazeSolver(MazePath);
                     mazeSolver.Solve();
-                    mazeSolver.SaveSolutionAsImage(SolveOutputPathTB.Text);
+                    mazeSolver.SaveSolutionAsImage(SolutionPath);
+
+                    if (UpscaleCB.Checked)
+                        mazeSolver.SaveSolutionAsImage(UpscaleSolutionPath, UpscalerNUD.Value);
+
                     mazeSolver = null;
-                    System.Diagnostics.Process.Start(SolveOutputPathTB.Text);
                 }
+
+                if (OpenCB.Checked)
+                    Process.Start(OutputFolderPath);
+
                 GC.Collect();
             }
             catch (Exception ex)
@@ -73,9 +93,14 @@ namespace YonatanMankovich.MazeUI
 
         private void BG_Worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            MakeMazeCB.Enabled = SolveMazeCB.Enabled = StartBTN.Enabled = MakerGB.Enabled = SolverGB.Enabled = true;
+            MakeCB.Enabled = SolveCB.Enabled = UpscaleCB.Enabled = OpenCB.Enabled = StartBTN.Enabled = true;
             BothCheckBoxesChanged();
             Cursor = Cursors.Default;
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Settings.Default.Save();
         }
     }
 }
